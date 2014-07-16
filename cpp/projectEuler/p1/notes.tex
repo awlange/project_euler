@@ -1,0 +1,39 @@
+\documentclass[11pt, oneside]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
+\usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
+%\geometry{landscape}                		% Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}				% Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
+								% TeX will automatically convert eps --> pdf in pdflatex		
+\usepackage{amssymb}
+
+\title{Project Euler: Problem 1}
+\author{Adrian Lange}
+%\date{}							% Activate to display a given date or no date
+
+\begin{document}
+\maketitle
+%\section{}
+%\subsection{}
+
+\section{Multiples of 3 and 5}
+If we list all the natural numbers below 10 that are multiples of 3 or 5, we get 3, 5, 6 and 9. The sum of these multiples is 23. 
+Find the sum of all the multiples of 3 or 5 below 1000.
+
+\section{Solution}
+Well, the brute force algorithm is easy. Just a for loop up to 1000 summing up if the modulus of 3 or 5 is 0. The answer is 233168.
+
+But, Wikipedia has nicely provided me with a much more clever solution. We can easily figure out how many integers below 1000 (max 999) are divisible by 3 or 5, 999/3 = 333 and 999/5 = 199. Then, it's easy to get the sums of these numbers by using the formula,
+\begin{equation}
+	1 + 2 + 3 + 4 + 5 + ... = \sum_{i=1}^{n} i = \frac{n(n+1)}{2} \;.
+\end{equation}
+Then, we've got
+\begin{equation}
+	{\rm sum} = 3 * \frac{999(999+1)}{2} + 5 * \frac{199(199+1)}{2} \;
+\end{equation}
+But, that double counts the numbers that are divisible by both 3 and 5 ({\em i.e.} divisible by 15. So, we just correct for that
+\begin{equation}
+	{\rm sum} = 3 * \frac{999(999+1)}{2} + 5 * \frac{199(199+1)}{2} - 15 * \frac{66(66+1)}{2} = 233168 \;.
+\end{equation}
+
+\end{document}  
