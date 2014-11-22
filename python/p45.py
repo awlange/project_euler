@@ -14,8 +14,17 @@ def Hn(n):
 
 
 def is_perfect_square(x):
-    t = int(math.sqrt(x))
-    return t*t == x
+    """
+    Rule: Perfect squares can only end in 0, 1, 4, or 9 in base 16
+    Helps to avoid the sqrt call 75% of the time!
+    """
+    d = int(x & 0xF)
+    if d > 9:
+        return False
+    if d != 2 and d != 3 and d != 5 and d != 6 and d != 7 and d != 8:
+        t = int(math.sqrt(x))
+        return t*t == x
+    return False
 
 
 def main():

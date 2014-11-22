@@ -1,67 +1,88 @@
 import math
 
+from p45 import is_perfect_square
 
-def gcd((a, b)):
-    while b != 0:
-        t = b
-        b = a % b
-        a = t
-    return a
+# (1, 1, 2, 1, 1, 2)
 
-
-def reduce((a, b)):
-    g = gcd((a, b))
-    return a/g, b/g
+def minimize_sequence(seq):
+    if len(seq) < 2:
+        return seq
 
 
-def digit_sum(n):
-    m = 0
-    while n > 0:
-        d = n % 10
-        n /= 10
-        m += d
-    return m
+    n = 0
+    while n < len(seq) - 1:
+        n += 1
+        if len(seq) % n == 0:
+            min_seq = seq[:n]
+            ndiv = len(seq) / n
 
+            n_good = True
+            for d in range(ndiv):
+                for i in range(n):
+                    if min_seq[i] != seq[d*n + i]:
+                        n_good = False
+                        break
+                if not n_good:
+                    break
+            if n_good:
+                # Found a minimum!
+                print "Minimized from {} to {}".format(len(seq), len(min_seq))
+                print seq, min_seq
+                return min_seq
 
-def add_fraction_to_x(x, (num, denom)):
-    x = x * denom
-    return num + x, x
-
-
-def add_fractions((n_a, d_a), (n_b, d_b)):
-    d = d_a * d_b
-    n = n_a * d_b + n_b * d_a
-    return n, d
-
-
-def invert((n, d)):
-    return d, n
-
-
-def add_to_denom(d, (n_b, d_b)):
-    return add_fractions((d, 1), (n_b, d_b))
+    return seq
 
 
 
-# sqrt(2) continued fraction
-# 3/2, 7/5, 17/12, 41/29
-def sqrt2():
-    f = (1, 2)
-    for i in range(1, 11):
-        print i, add_fraction_to_x(1, f)
-        f = invert(add_fractions((2, 1), f))
+def compute_period(n):
+    a0 = int(math.sqrt(n))
 
-    print i+1, add_fraction_to_x(1, f)
-    print "approx: {}".format(1 + float(f[0]) / float(f[1]))
-    print "real: {}".format(math.sqrt(2))
+    aseq = []  # a_i sequence
+    abd_keep = (1, 1, 1)
+    b = a0
+    d = 1
+    i = -1
+    while 1:
+        i += 1
+        a = a0 if i == 0 else aseq[i-1]
+        d = (n - b * b) / d
+        abd = (a, b , d)
+        # print "adb:", a, b, d
+
+        # Check if we are repeating
+        if i == 1:
+            abd_keep = abd
+        elif i > 1 and abd_keep == abd:
+            break
+
+        # Determine b, which is <= a0
+        c = a0
+        while 1:
+            x = b + c
+            if x % d == 0:
+                aseq.append(x / d)
+                b = c
+                break
+            c -= 1
+
+    # Check if we can minimize this sequence any more
+    fin = minimize_sequence(aseq[:-1])
+    # fin = aseq[:-1]
+    print n, a0, fin, len(fin)
+    return len(fin)
 
 
-def e():
-    one = (1, 1)
-    two = (2, 1)
-    f = (0, 1)
+def main():
 
+    # print minimize_sequence([1, 1, 2, 1, 1, 2, 1, 1, 2])
+    #print minimize_sequence([1, 1, 1, 1, 1, 1])
+    n_odds = 0
+    for n in range(1, 10000 + 1):
+        if not is_perfect_square(n):
+            if compute_period(n) % 2 == 1:
+                n_odds += 1
 
+    print n_odds
 
 if __name__ == '__main__':
-    e()
+    main()
